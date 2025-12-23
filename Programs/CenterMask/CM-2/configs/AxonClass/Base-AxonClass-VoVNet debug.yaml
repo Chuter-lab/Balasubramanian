@@ -1,0 +1,43 @@
+# Author: Madhusudhanan Balasubramanian (MB), Ph.D., The University of Memphis
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+  BACKBONE:
+    NAME: "build_fcos_vovnet_fpn_backbone"
+    FREEZE_AT: 0
+  VOVNET:
+    OUT_FEATURES: ["stage3", "stage4", "stage5"]
+  FPN:
+    IN_FEATURES: ["stage3", "stage4", "stage5"]
+  PROPOSAL_GENERATOR:
+    NAME: "FCOS"  
+  FCOS:
+    POST_NMS_TOPK_TEST: 1000 #Max number of detections per image
+    POST_NMS_TOPK_TRAIN: 2000
+  # PIXEL_MEAN: [102.9801, 115.9465, 122.7717]
+  MASK_ON: True
+  MASKIOU_ON: True
+  ROI_HEADS:
+    NAME: "CenterROIHeads"
+    NUM_CLASSES: 3 #number of foreground classes
+    IN_FEATURES: ["p3", "p4", "p5"]
+    BATCH_SIZE_PER_IMAGE: 250
+  ROI_MASK_HEAD:
+    NAME: "SpatialAttentionMaskHead"
+    ASSIGN_CRITERION: "ratio"
+    NUM_CONV: 4
+    POOLER_RESOLUTION: 14
+DATASETS:
+  TRAIN: ("Phase3_Training",) #must match with DatasetCatalog.register() call
+  TEST: ("Phase3_Validation",)
+SOLVER:
+  CHECKPOINT_PERIOD: 500 #Saves a checkpoint / model after this number of iterations
+  IMS_PER_BATCH: 3 #16 #training images/step
+  BASE_LR: 0.001  # Note that RetinaNet uses a different default learning rate
+  STEPS: (4000, 8000) #Iteration number at which the learning rate will be decreased by SOLVER.GAMMA amount
+  MAX_ITER: 10000
+INPUT:
+  #MIN_SIZE_TRAIN: (640, 672, 704, 736, 768, 800) #size of the smallest side of the image during training
+  MIN_SIZE_TRAIN: (256,)
+TEST:
+  DETECTIONS_PER_IMAGE: 600
+  EVAL_PERIOD: 300

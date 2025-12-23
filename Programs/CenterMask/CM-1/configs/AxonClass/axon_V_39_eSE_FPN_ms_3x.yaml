@@ -1,0 +1,9 @@
+# Author: Madhusudhanan Balasubramanian (MB), Ph.D., The University of Memphis
+VERSION: 2
+_BASE_: "Base-AxonClass-VoVNet.yaml"
+MODEL:
+  #WEIGHTS: "https://www.dropbox.com/s/q98pypf96rhtd8y/vovnet39_ese_detectron2.pth?dl=1"
+  WEIGHTS: "vovnet39_ese_detectron2.pth"
+  VOVNET:
+    CONV_BODY : "V-39-eSE"
+OUTPUT_DIR: "output/AxonClass/AxonClass-V-39-ms-3x"
